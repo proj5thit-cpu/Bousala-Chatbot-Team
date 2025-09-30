@@ -31,7 +31,7 @@ main = Blueprint("main", __name__)
 load_dotenv()
 
 # Get absolute path safely
-TREE_PATH = os.path.join(os.path.dirname(__file__), "data", "decision_tree.json.")
+TREE_PATH = os.path.join(os.path.dirname(__file__), "data", "decision_tree.json")
 
 # ==== Login decorator ====
 def login_required(view):
@@ -546,6 +546,7 @@ def admin_export():
         download_name=fname,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 
 
