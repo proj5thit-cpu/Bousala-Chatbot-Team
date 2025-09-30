@@ -1,4 +1,4 @@
-import os 
+port os 
 import pytz
 import json
 import requests
@@ -24,9 +24,6 @@ import pickle
 from flask import abort
 from io import BytesIO
 import pandas as pd
-
-
-
 
 main = Blueprint("main", __name__)
 
@@ -256,8 +253,7 @@ def post():
 
     return render_template("post.html", lang=lang, errors={})
 
-
-
+# Inject notifications
 @main.app_context_processor
 def inject_notifications():
     user_id = session.get("user_id")
@@ -270,7 +266,6 @@ def inject_notifications():
 
     return dict(notifications=notifs, unread_count=unread_count)
 
-
 @main.route("/notifications/read_all")
 @login_required
 def read_all_notifications():
@@ -279,118 +274,81 @@ def read_all_notifications():
     db.session.commit()
     return redirect(request.referrer or url_for("main.home"))
 
-
-# ==== Serve uploaded files ====
+# Serve uploaded files
 @main.route('/uploads/<filename>')
 def uploaded_file(filename):
     upload_folder = os.path.join(current_app.root_path, 'uploads')
     return send_from_directory(upload_folder, filename)
 
-
-
-
-
-# ==== Posts ====
+# Posts list
 @main.route('/posts', methods=['GET'])
 def posts_list():
     lang = request.args.get('lang', 'ar')
-
     filter_by = request.args.get('filter')
     value = request.args.get('value')
+    query = Post.query.options(joinedload(Post.user), joinedload(Post.media_items))
 
-    # Start with all posts
-    query = Post.query.options(
-        joinedload(Post.user),
-        joinedload(Post.media_items)
-    )
-
-    # Apply filtering
-    if filter_by == "type":
-        query = query.filter(Post.misinfo_type == value)
-    elif filter_by == "followup":
-        query = query.filter(Post.followup == value)
-    elif filter_by == "danger":
-        query = query.filter(Post.danger_level == value)
-    elif filter_by == "state":
-        query = query.filter(Post.state == value)
-    elif filter_by == "time":
-        query = query.filter(Post.time == value)
+    if filter_by == "type": query = query.filter(Post.misinfo_type == value)
+    elif filter_by == "followup": query = query.filter(Post.followup == value)
+    elif filter_by == "danger": query = query.filter(Post.danger_level == value)
+    elif filter_by == "state": query = query.filter(Post.state == value)
+    elif filter_by == "time": query = query.filter(Post.time == value)
     elif filter_by == "owner":
         if value == "me" and session.get("user_id"):
             query = query.filter(Post.user_id == session["user_id"])
 
     posts = query.order_by(Post.created_at.desc(), Post.id.desc()).all()
-
     return render_template('posts_list.html', lang=lang, posts=posts)
 
-
-# === Edit Post ===
+# Edit post
 @main.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
-
-    # Only the owner can edit
-    if post.user_id != session.get('user_id'):
-        abort(403)
-
+    if post.user_id != session.get('user_id'): abort(403)
     if request.method == 'POST':
         post.content = request.form.get('story')
-        
-
         db.session.commit()
         flash("✅ Your post was updated successfully!", "success")
         return redirect(url_for('main.posts_list'))
-
     return render_template('edit_post.html', post=post)
 
-
-# === Delete Post ===
+# Delete post
 @main.route('/post/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
-
-    # Only the owner can delete
-    if post.user_id != session.get('user_id'):
-        abort(403)
-
+    if post.user_id != session.get('user_id'): abort(403)
     db.session.delete(post)
     db.session.commit()
     flash("🗑 Your post was deleted successfully.", "success")
     return redirect(url_for('main.posts_list'))
 
-
-
 # ==== Chatbot Helpers ====
 
-# ==== Load the tree ====
-def load_tree():
-    try:
-        with open(TREE_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        current_app.logger.error("❌ Could not load decision_tree.json: %s", e)
-        return {}
+# ==== Load the tree safely ====
+def init_decision_tree(app):
+    """
+    Initialize decision tree after app context exists
+    """
+    with app.app_context():
+        try:
+            with open(TREE_PATH, "r", encoding="utf-8") as f:
+                app.decision_tree = json.load(f)
+        except Exception as e:
+            app.logger.error("❌ Could not load decision_tree.json: %s", e)
+            app.decision_tree = {}
 
-decision_tree = load_tree()
+# Use current_app.decision_tree inside routes
+def get_decision_tree():
+    return getattr(current_app, "decision_tree", {})
 
-# ==== Serialize node for frontend ====
+# Serialize node
 def serialize_node(node_obj, lang="en"):
-    """
-    node_obj: dict from JSON
-    returns localized structure for frontend:
-      - questions/sub_question -> { type, question, options: [{key,label}] }
-      - leaf -> { type, advice: [..], stories: { good: [...], bad: [...] } }
-    """
     if not isinstance(node_obj, dict):
         return {"type": "leaf", "advice": [], "stories": {"good": [], "bad": []}}
-
     out = {"type": node_obj.get("type", "leaf")}
-
-    # Questions & sub questions
     if out["type"] in ("question", "sub_question"):
         q = node_obj.get("question", {})
         out["question"] = q.get(lang) if isinstance(q, dict) else q
-
         opts = []
         for key, label in node_obj.get("options", {}).items():
             if isinstance(label, dict):
@@ -400,17 +358,9 @@ def serialize_node(node_obj, lang="en"):
             opts.append({"key": key, "label": lab})
         out["options"] = opts
         return out
-
-    # Leaf nodes
     if out["type"] == "leaf":
-        # advice
         adv = node_obj.get("advice", {})
-        if isinstance(adv, dict):
-            out["advice"] = adv.get(lang, adv.get("en", []))
-        else:
-            out["advice"] = adv or []
-
-        # good stories from JSON (if present)
+        out["advice"] = adv.get(lang, adv.get("en", [])) if isinstance(adv, dict) else adv or []
         stories_obj = node_obj.get("stories", {}) or {}
         good_obj = stories_obj.get("good", {}) if isinstance(stories_obj, dict) else {}
         good_list = []
@@ -418,34 +368,27 @@ def serialize_node(node_obj, lang="en"):
             good_list = good_obj.get(lang, good_obj.get("en", []))
         elif isinstance(good_obj, list):
             good_list = good_obj
-
         out["stories"] = {"good": good_list, "bad": []}
-
-        # fetch BAD stories from DB by main misinfo_type mapping:
-        # prefer node_obj['misinfo_type'] (set in JSON on leafs) else fallback to node_obj['id']
         misinfo_type = node_obj.get("misinfo_type") or node_obj.get("id")
         if misinfo_type:
             try:
-                # Post model must have column `misinfo_type` and `content`
                 bad_posts = Post.query.filter_by(misinfo_type=misinfo_type).order_by(Post.created_at.desc()).all()
                 out["stories"]["bad"] = [p.content for p in bad_posts if getattr(p, "content", None)]
             except Exception as e:
                 current_app.logger.exception("Failed to load bad posts for %s: %s", misinfo_type, e)
                 out["stories"]["bad"] = []
         return out
-
-    # default
     out["advice"] = []
     out["stories"] = {"good": [], "bad": []}
     out["options"] = []
     return out
 
+# Guide API
 @main.route("/api/guide/set_lang", methods=["POST"])
 def guide_set_lang():
     data = request.get_json() or {}
     lang = data.get("lang", "en")
-    if lang not in ("en", "ar"):
-        lang = "en"
+    if lang not in ("en", "ar"): lang = "en"
     session["guide_lang"] = lang
     session["guide_path"] = ["start"]
     return jsonify({"ok": True, "lang": lang})
@@ -455,9 +398,8 @@ def guide_start():
     lang = request.args.get("lang", session.get("guide_lang", "en"))
     session["guide_lang"] = lang
     session["guide_path"] = ["start"]
-    node = decision_tree.get("start", decision_tree.get("fallback", {}))
+    node = get_decision_tree().get("start", get_decision_tree().get("fallback", {}))
     return jsonify(serialize_node(node, lang))
-
 
 @main.route("/api/guide/choose", methods=["POST"])
 def guide_choose():
@@ -465,49 +407,36 @@ def guide_choose():
     lang = data.get("lang", session.get("guide_lang", "en"))
     choice = data.get("choice", "")
     path = session.get("guide_path", ["start"])
-
     if not choice:
         return jsonify({"error": "missing_choice"}), 400
-
-    
-    node = decision_tree.get(choice)
-
- 
+    tree = get_decision_tree()
+    node = tree.get(choice)
     if not node:
         for pkey in path:
-            parent_node = decision_tree.get(pkey, {})
+            parent_node = tree.get(pkey, {})
             opts = parent_node.get("options", {}) if isinstance(parent_node, dict) else {}
             if choice in opts:
-                node = decision_tree.get(choice)
+                node = tree.get(choice)
                 break
-            
             for k, v in opts.items():
                 if isinstance(v, dict):
                     lab = v.get(lang, v.get("en", k))
                 else:
                     lab = v
                 if lab == choice:
-                    node = decision_tree.get(k)
+                    node = tree.get(k)
                     break
-            if node:
-                break
-
+            if node: break
     if not node:
-        node = decision_tree.get("fallback", {})
-
+        node = tree.get("fallback", {})
     path.append(choice)
     session["guide_path"] = path
-
     return jsonify(serialize_node(node, lang))
 
-
-
-
+# Stories endpoint
 @main.route('/get_stories/<decision_type>', methods=['GET'])
 def get_stories(decision_type):
-    
     stories = Post.query.filter_by(misinfo_type=decision_type).all()
-
     story_list = []
     for s in stories:
         story_list.append({
@@ -517,7 +446,6 @@ def get_stories(decision_type):
             "created_at": s.created_at.strftime("%Y-%m-%d")
         })
     return jsonify(story_list)
-
 
 
 # --- ADMIN CREDENTIALS (REPLACE / MOVE to env in production) ---
@@ -618,5 +546,6 @@ def admin_export():
         download_name=fname,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 
