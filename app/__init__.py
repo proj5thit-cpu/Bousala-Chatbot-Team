@@ -50,7 +50,12 @@ def create_app():
     init_db(app)
     
     # Register blueprint
-    from .routes import main
+    from .routes import main, init_decision_tree
     app.register_blueprint(main)
+
+    # -----------------------
+    # Initialize decision tree (fix context error)
+    # -----------------------
+    init_decision_tree(app)
 
     return app
