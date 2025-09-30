@@ -52,35 +52,6 @@ def login_required(view):
 
 
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") 
-OPENAI_API_URL = "https://api.openai.com/v1/chat/completions" 
-DEFAULT_MODEL = "gpt-3.5-turbo" 
-if not OPENAI_API_KEY:
-    print("⚠ Warning: OPENAI_API_KEY not set — chatbot will not work until it's set.")
-
-
-
-def call_openai(payload):
-    if not OPENAI_API_KEY:
-        return {"error": "Server: OPENAI_API_KEY not configured."}
-
-    headers = {
-        "Authorization": f"Bearer {OPENAI_API_KEY}",
-        "Content-Type": "application/json",
-    }
-
-    try:
-        resp = requests.post(
-            OPENAI_API_URL,
-            headers=headers,
-            json=payload,
-            timeout=30
-        )
-        resp.raise_for_status()
-        return resp.json()
-    except Exception as e:
-        print("❌ OpenAI request failed:", e)
-        return {"error": str(e)}
 
 
 
@@ -702,3 +673,4 @@ def admin_export():
         download_name=fname,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
