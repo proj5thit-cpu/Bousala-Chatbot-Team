@@ -33,13 +33,10 @@ main = Blueprint("main", __name__)
 # Load .env
 load_dotenv()
 
-main = Blueprint('main', __name__)
-
 # Get absolute path safely
 TREE_PATH = os.path.join(os.path.dirname(__file__), "data", "decision_tree.json.")
 
-
-
+# ==== Login decorator ====
 def login_required(view):
     @wraps(view)
     def wrapped(*args, **kwargs):
@@ -49,12 +46,6 @@ def login_required(view):
             return redirect(url_for('main.login', lang=lang))
         return view(*args, **kwargs)
     return wrapped
-
-
-
-
-
-
 
 # ==== Password & Phone Validation ====
 PASSWORD_REGEX = re.compile(r'^(?=.*[A-Z])(?=.*\d).{6,}$')
@@ -66,7 +57,6 @@ def valid_password(pw):
 def valid_phone(phone):
     return bool(PHONE_REGEX.match(phone))
 
-
 # --- Pages ------------------------------------------------
 @main.route('/')
 @main.route('/home')
@@ -74,12 +64,10 @@ def home():
     lang = request.args.get('lang', 'ar')
     return render_template('home.html', lang=lang)
 
-
 @main.route('/home_fully')
 def home_fully():
     lang = request.args.get('lang', 'ar')
     return render_template('home_fully.html', lang=lang)
-
 
 @main.route('/about')
 def about():
@@ -95,7 +83,6 @@ def guidebot():
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     lang = request.args.get('lang', 'ar')
-
     if request.method == 'POST':
         username = (request.form.get('username') or '').strip()
         email = (request.form.get('email') or '').strip()
@@ -114,26 +101,21 @@ def register():
                 if lang == 'en' else
                 "كلمة المرور يجب أن تكون 6 أحرف على الأقل وتحتوي على حرف كبير واحد ورقم واحد."
             )
-
-        # Check duplicates
         if User.query.filter_by(username=username).first():
             errors.append("Username already exists." if lang == 'en' else "اسم المستخدم موجود بالفعل.")
         if User.query.filter_by(email=email).first():
             errors.append("Email already exists." if lang == 'en' else "البريد الإلكتروني موجود بالفعل.")
 
-        # If errors, reload register form
         if errors:
             for e in errors:
                 flash(e, 'danger')
             return render_template('register.html', lang=lang, form=request.form)
 
-        # Save new user
         pw_hash = generate_password_hash(password)
         user = User(username=username, email=email, password=pw_hash, is_guest=False)
         db.session.add(user)
         db.session.commit()
 
-        # ✅ Auto login after register
         session['user_id'] = user.id
         session['username'] = user.username
         session['is_guest'] = False
@@ -142,8 +124,6 @@ def register():
         return redirect(url_for('main.home_fully', lang=lang))
 
     return render_template('register.html', lang=lang)
-
-
 
 # ==== Login ====
 @main.route('/login', methods=['GET','POST'])
@@ -157,7 +137,6 @@ def login():
             flash("Username/Email and password are required." if lang=='en' else "اسم المستخدم/البريد الإلكتروني وكلمة المرور مطلوبان.", 'danger')
             return render_template('login.html', lang=lang, form=request.form)
 
-        # ✅ Find user by username OR email
         user = User.query.filter(
             (User.username == username_or_email) | (User.email == username_or_email)
         ).first()
@@ -166,20 +145,14 @@ def login():
             flash("Invalid username/email or password." if lang=='en' else "اسم المستخدم/البريد الإلكتروني أو كلمة المرور غير صحيح.", 'danger')
             return render_template('login.html', lang=lang, form=request.form)
 
-        # ✅ Store session data including is_guest
         session['user_id'] = user.id
         session['username'] = user.username
         session['is_guest'] = user.is_guest
 
-        flash(
-            f"Welcome, {user.username}!" if lang=='en' else f"مرحباً، {user.username}!",
-            'success'
-        )
+        flash(f"Welcome, {user.username}!" if lang=='en' else f"مرحباً، {user.username}!", 'success')
         return redirect(url_for('main.home_fully', lang=lang))
 
     return render_template('login.html', lang=lang)
-
-
 
 @main.route('/logout')
 def logout():
@@ -187,49 +160,30 @@ def logout():
     session.clear()
     flash("You have been logged out." if lang=='en' else "تم تسجيل الخروج.", 'info')
     return redirect(url_for('main.home', lang=lang))
- 
 
-
+# ==== Guest Start ====
 @main.route('/guest-start')
 def guest_start():
     lang = request.args.get('lang', 'ar')
-
-    # Create a display name like Guest-7fa3
     username = f"Guest-{secrets.token_hex(2)}"
-
-    # Random password (unused) just to satisfy NOT NULL
     random_pw = generate_password_hash(secrets.token_urlsafe(16))
-
-    user = User(
-        username=username,
-        email=None,
-        password=random_pw,
-        is_guest=True
-    )
+    user = User(username=username, email=None, password=random_pw, is_guest=True)
     db.session.add(user)
     db.session.commit()
-
-    # Session flags
     session['user_id'] = user.id
     session['username'] = username
     session['is_guest'] = True
-
     return redirect(url_for('main.home_fully', lang=lang))
 
-
-
+# ==== Post submission ====
 @main.route('/post', methods=['GET', 'POST'])
 def post():
     lang = request.args.get('lang', 'ar')
     errors = {}
-
     if request.method == 'POST':
-        # Ensure user is logged in
         user_id = session.get('user_id')
         if not user_id:
             return redirect(url_for('main.login', lang=lang))
-
-        # Collect form data
         age = request.form.get('age')
         gender = request.form.get('gender')
         state = request.form.get('state')
@@ -241,7 +195,6 @@ def post():
         content = (request.form.get('story') or "").strip()
         time = request.form.get('time') 
 
-        # Validation
         if not age: errors["age"] = "Age is required" if lang == "en" else "العمر مطلوب"
         if not gender: errors["gender"] = "Gender is required" if lang == "en" else "الجنس مطلوب"
         if not state: errors["state"] = "Region is required" if lang == "en" else "الولاية مطلوبة"
@@ -258,13 +211,11 @@ def post():
                                    followup=followup, decision=decision,
                                    danger=danger, story=content, time=time)
 
-        # Update user profile
         user = User.query.get(user_id)
         if user:
             if age: user.age = age
             if gender: user.gender = gender
 
-        # Create new Post
         new_post = Post(
             content=content,
             user_id=user_id,
@@ -280,36 +231,30 @@ def post():
         db.session.add(new_post)
         db.session.flush()
 
-        # Handle uploaded media
         files = request.files.getlist('media')
         upload_folder = os.path.join('app', 'uploads')
         os.makedirs(upload_folder, exist_ok=True)
-
         for file in files:
             if file and file.filename:
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(upload_folder, filename)
                 file.save(filepath)
-
                 media_item = Media(
                     filename=filename,
-                    media_type=file.mimetype.split('/')[0],  
+                    media_type=file.mimetype.split('/')[0],
                     post_id=new_post.id
                 )
                 db.session.add(media_item)
-        
-        # Notify other users
+
         other_users = User.query.filter(User.id != user_id, User.is_guest == False).all()
         for u in other_users:
             notif = Notification(user_id=u.id, message="New Story Has Been Posted.")
             db.session.add(notif)
-        
-        db.session.commit()
 
+        db.session.commit()
         return redirect(url_for('main.posts_list', lang=lang))
 
     return render_template("post.html", lang=lang, errors={})
-
 
 
 
@@ -673,4 +618,5 @@ def admin_export():
         download_name=fname,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
