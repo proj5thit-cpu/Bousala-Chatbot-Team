@@ -1,0 +1,6 @@
+Humanitarian Decision-Support Guidelines
+
+1. When receiving unverified alerts (e.g., about attacks, shortages, or evacuations), civilians should first check trusted sources such as UN OCHA Sudan or WHO Sudan.
+2. If official confirmation is unavailable, delay decisions that put lives at risk until more reliable information is obtained.
+3. Use verified hotlines or contact humanitarian organizations before relocating to “safe zones.”
+4. During health emergencies, rely only on WHO or Sudanese Ministry of Health announcements for guidance on treatment and prevention.

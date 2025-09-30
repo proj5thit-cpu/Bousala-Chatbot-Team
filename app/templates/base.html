@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="{{ 'en' if request.args.get('lang') == 'en' else 'ar' }}" dir="{{ 'ltr' if request.args.get('lang') == 'en' else 'rtl' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوصلة - Bousala</title>
+
+    <!-- Bootstrap RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Google Fonts (Arabic-friendly) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+</head>
+<body>
+{% if not hide_navbar %}
+   <!-- Navbar -->
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{{ url_for('main.home_fully', lang=request.args.get('lang', 'ar')) }}">
+                {% if request.args.get('lang') == 'en' %}
+                    Home
+                {% else %}
+                    الصفحة الرئيسية
+                {% endif %}
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+
+                    <li class="nav-item">
+                       <a class="nav-link" href="{{ url_for('main.posts_list', lang=request.args.get('lang', 'ar')) }}">
+                        {% if request.args.get('lang') == 'en' %} Posts {% else %} المنشورات {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.guidebot') }}">GuideBot</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.about', lang=request.args.get('lang', 'ar')) }}">
+                         {% if request.args.get('lang') == 'en' %}
+                          About
+                         {% else %}
+                        حولنا
+                        {% endif %}
+                       </a>
+
+                    </li>
+
+                    <!-- Post Button -->
+<li class="nav-item mx-2">
+  {% if session.get('user_id') %}
+    <a class="btn btn-primary px-3"
+       href="{{ url_for('main.post', lang=request.args.get('lang', 'ar')) }}">
+      {% if request.args.get('lang') == 'en' %} Share a Post {% else %} شارك منشورك {% endif %}
+    </a>
+  {% else %}
+    <a class="btn btn-primary px-3"
+       href="{{ url_for('main.login', lang=request.args.get('lang', 'ar')) }}">
+      {% if request.args.get('lang') == 'en' %} Share a Post {% else %} شارك منشورك {% endif %}
+    </a>
+  {% endif %}
+</li>
+      {% if not session.get('user_id') %}
+  <!-- Login -->
+  <li class="nav-item">
+    <a class="nav-link text-white"
+       href="{{ url_for('main.login', lang=request.args.get('lang', 'ar')) }}">
+      {% if request.args.get('lang') == 'en' %} Login {% else %} تسجيل الدخول {% endif %}
+    </a>
+  </li>
+  <!-- Register -->
+  <li class="nav-item">
+    <a class="nav-link text-white"
+       href="{{ url_for('main.register', lang=request.args.get('lang', 'ar')) }}">
+      {% if request.args.get('lang') == 'en' %} Register {% else %} إنشاء حساب {% endif %}
+    </a>
+  </li>
+{% else %}
+  <!-- Hello, Username (not a link) -->
+  <li class="nav-item">
+    <span class="nav-link text-white-50">
+      {% if request.args.get('lang') == 'en' %} Hello {% else %} مرحباً {% endif %},
+      {{ session.get('username') }}
+    </span>
+  </li>
+
+<!-- Notifications  -->
+
+{% if session.get('user_id') %}
+  {% if not session.get('is_guest') %}
+<li class="nav-item dropdown mx-2">
+  <a class="nav-link position-relative dropdown-toggle" href="#" id="navbarDropdown" 
+     role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-bell fs-5"></i>
+
+    {% if unread_count > 0 %}
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{ unread_count }}
+    </span>
+    {% endif %}
+  </a>
+
+  <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown" style="min-width: 250px;">
+    <li class="dropdown-header text-center fw-semibold">
+      {% if request.args.get('lang') == 'en' %} Notifications {% else %} الإشعارات {% endif %}
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    
+    {% if notifications %}
+      {% for n in notifications %}
+        <li class="px-3 py-2 small {% if not n.is_read %}fw-bold{% endif %}">
+          {{ n.message }} <br>
+          <small class="text-muted">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </li>
+      {% endfor %}
+    {% else %}
+      <li class="text-center text-muted py-2">
+        {% if request.args.get('lang') == 'en' %} No notifications yet {% else %} لا توجد إشعارات حالياً {% endif %}
+      </li>
+    {% endif %}
+  </ul>
+</li>
+  {% endif %}
+{% endif %}
+
+  <!-- Logout -->
+  <li class="nav-item">
+    <a class="nav-link text-white"
+       href="{{ url_for('main.logout', lang=request.args.get('lang', 'ar')) }}">
+      {% if request.args.get('lang') == 'en' %} Logout {% else %} تسجيل الخروج {% endif %}
+    </a>
+  </li>
+{% endif %}
+{% if not hide_navbar %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <div class="container mt-3" style="max-width: 900px;">
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endif %}
+
+
+                    <!-- Language Switch -->
+                    <li class="nav-item">
+                        {% if request.args.get('lang') == 'en' %}
+                            <a class="nav-link text-white" href="{{ url_for('main.home_fully', lang='ar') }}">العربية</a>
+                        {% else %}
+                            <a class="nav-link text-white" href="{{ url_for('main.home_fully', lang='en') }}">English</a>
+                        {% endif %}
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endif %}
+
+    <!-- Main Content Block -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const bell = document.getElementById("navbarDropdown");
+  if (bell) {
+    bell.addEventListener("click", function () {
+      fetch("/notifications/read_all");
+    });
+  }
+});
+const alerts = document.querySelectorAll('.alert');
+  alerts.forEach(alert => {
+    setTimeout(() => {
+      const bsAlert = new bootstrap.Alert(alert);
+      bsAlert.close();
+    }, 5000);
+  });
+</script>
+
+
+</body>
+</html>

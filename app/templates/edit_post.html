@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(135deg, #1e293b, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Cairo', sans-serif;
+  }
+</style>
+
+<section class="py-5">
+  <div class="container" style="max-width: 750px;">
+
+    <!-- Heading -->
+    <div class="text-center mb-4 p-4 rounded-4 shadow-lg"
+         style="background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px);">
+      <h2 class="fw-bold mb-2" style="font-size: 2.2rem;">
+        ✏ {% if lang == 'en' %}Edit Your Story{% else %}تعديل قصتك{% endif %}
+      </h2>
+      <p style="color: #cbd5e1;">
+        {% if lang == 'en' %}
+          Update your story below. Other details remain unchanged.
+        {% else %}
+          يمكنك تعديل قصتك فقط، باقي التفاصيل ستظل كما هي.
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Edit Card -->
+    <div class="card shadow-lg border-0 rounded-4"
+         style="background: rgba(255,255,255,0.97); backdrop-filter: blur(8px);">
+      <div class="card-body p-4">
+
+        <form method="POST">
+
+          <!-- Story Field -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              {% if lang == 'en' %}Your Story{% else %}قصتك{% endif %}
+            </label>
+            <textarea id="story" name="story" class="form-control" rows="6" maxlength="3000" required>{{ post.content }}</textarea>
+            <div class="d-flex justify-content-between mt-1">
+              <small class="text-muted">
+                {% if lang == 'en' %}Max 3000 chars{% else %}الحد الأقصى 3000 حرف{% endif %}
+              </small>
+              <small class="text-muted" id="char-count">0 / 3000</small>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-success px-4 py-2 rounded-3 shadow-sm">
+              💾 {% if lang == 'en' %}Save Changes{% else %}حفظ التعديلات{% endif %}
+            </button>
+            <a class="btn btn-outline-secondary px-4 py-2 rounded-3"
+               href="{{ url_for('main.posts_list', lang=lang) }}">
+               {% if lang == 'en' %}Cancel{% else %}إلغاء{% endif %}
+            </a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- Footer Section -->
+  <footer class="text-center py-3 bg-dark text-white rounded-top mt-auto">
+    {% if lang == "en" %}
+      <small>&copy; 2025 Bousala. All rights reserved.</small>
+    {% else %}
+      <small dir="rtl">&copy; 2025 بوصلة. جميع الحقوق محفوظة.</small>
+    {% endif %}
+  </footer>
+
+<!-- JS to show character count -->
+<script>
+  const storyInput = document.getElementById("story");
+  const charCount = document.getElementById("char-count");
+
+  function updateCharCount() {
+    charCount.textContent = storyInput.value.length + " / 3000";
+  }
+
+  storyInput.addEventListener("input", updateCharCount);
+  updateCharCount();
+</script>
+
+{% endblock %}

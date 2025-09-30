@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(135deg, #1e293b, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Cairo', sans-serif;
+  }
+  .error-message {
+    font-size: 0.9rem;
+    margin-top: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+  }
+</style>
+
+<section class="py-5">
+  <div class="container" style="max-width: 950px;">
+
+    <!-- Heading -->
+    <div class="text-center mb-4 p-4 rounded-4 shadow-lg"
+         style="background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(8px); color: #fff;">
+      <h2 class="fw-bold mb-2" style="font-size: 2.2rem;">
+        {% if lang == 'en' %}Share Your Story{% else %}شارك قصتك{% endif %}
+      </h2>
+      <p class="mb-2" style="font-size: 1.1rem; color: #cbd5e1;">
+        {% if lang == 'en' %}
+          Dear citizen, share your story to make your voice heard worldwide.
+        {% else %}
+          عزيزي المواطن ، شارك قصتك لنوصل صوتك للعالم
+        {% endif %}
+      </p>
+      <div class="alert alert-info border-0 fw-semibold mt-3"
+           style="background: rgba(59,130,246,0.2); color: #bfdbfe;">
+        {% if lang == 'en' %}
+          🔒 Your name and identity will never appear. Don’t worry, you are completely anonymous.
+        {% else %}
+          🔒 اسمك وهويتك لن تظهر أبداً. لا تقلق، مشاركتك مجهولة تماماً.
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card shadow-lg border-0 rounded-4"
+         style="background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);">
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" novalidate>
+
+          <!-- Age group -->
+          <div class="mb-3">
+            <label class="form-label">Age</label>
+            <select name="age" class="form-select" required>
+              <option value="">Choose...</option>
+              <option value="<20">&lt;20</option>
+              <option value="20-24">20 - 24</option>
+              <option value="25-29">25 - 29</option>
+              <option value="30-34">30 - 34</option>
+              <option value="35-39">35 - 39</option>
+              <option value="40-44">40 - 44</option>
+              <option value="45-49">45 - 49</option>
+              <option value="50-54">50 - 54</option>
+              <option value="55-59">55 - 59</option>
+              <option value="60+">60+</option>
+            </select>
+            {% if errors.get("age") %}
+              <div class="error-message">{{ errors["age"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Gender -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{% if lang == 'en' %}Gender{% else %}الجنس{% endif %}</label>
+            <select name="gender" class="form-select" required>
+              <option value="">{% if lang == 'en' %}Select{% else %}اختر{% endif %}</option>
+              <option value="Male">{% if lang == 'en' %}Male{% else %}ذكر{% endif %}</option>
+              <option value="Female">{% if lang == 'en' %}Female{% else %}أنثى{% endif %}</option>
+              <option value="Prefer not to say">{% if lang == 'en' %}Prefer not to say{% else %}أفضل عدم القول{% endif %}</option>
+            </select>
+            {% if errors.get("gender") %}
+              <div class="error-message">{{ errors["gender"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Region -->
+          <div class="mb-3">
+            <label for="region" class="form-label fw-semibold">{% if lang == 'en' %}Location / State{% else %} مكان حدوث القصة - الولاية{% endif %}</label>
+            <select id="region" name="state" class="form-select" required>
+              <option value="">{% if lang == 'en' %}Select Region{% else %}اختر المنطقة{% endif %}</option>
+              <option value="Khartoum">Khartoum State</option>
+              <option value="Gezira">Gezira</option>
+              <option value="Kassala">Kassala</option>
+              <option value="Red Sea">Red Sea</option>
+              <option value="Blue Nile">Blue Nile</option>
+              <option value="White Nile">White Nile</option>
+              <option value="North Kordofan">North Kordofan</option>
+              <option value="South Kordofan">South Kordofan</option>
+              <option value="East Darfur">East Darfur</option>
+              <option value="West Darfur">West Darfur</option>
+              <option value="North Darfur">North Darfur</option>
+              <option value="South Darfur">South Darfur</option>
+              <option value="Central Darfur">Central Darfur</option>
+              <option value="Northern State">Northern State</option>
+              <option value="River Nile">River Nile</option>
+              <option value="Sennar">Sennar</option>
+            </select>
+            {% if errors.get("state") %}
+              <div class="error-message">{{ errors["state"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Localities -->
+          <div class="mb-3 d-none" id="locality-wrapper">
+            <label for="locality" class="form-label fw-semibold">{% if lang == 'en' %}Locality{% else %}المحلية{% endif %}</label>
+            <select id="locality" name="locality" class="form-select"></select>
+          </div>
+
+          <!-- Time -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{% if lang == 'en' %}Time that the Story Took Place{% else %}الوقت الذي حدثت فيه القصة{% endif %}</label>
+            <select name="time" class="form-select" required>
+              <option value="">{% if lang == 'en' %}Select Time{% else %}اختر الوقت{% endif %}</option>
+              <option value="April – June 2023">April – June 2023 (beginning of the war)</option>
+              <option value="July – September 2023">July – September 2023</option>
+              <option value="October – December 2023">October – December 2023</option>
+              <option value="January – March 2024">January – March 2024</option>
+              <option value="April – June 2024">April – June 2024</option>
+              <option value="July – September 2024">July – September 2024</option>
+              <option value="October – December 2024">October – December 2024</option>
+              <option value="January – March 2025">January – March 2025</option>
+              <option value="April – June 2025">April – June 2025</option>
+              <option value="July 2025 – Present">July 2025 – Present</option>
+            </select>
+            {% if errors.get("time") %}
+              <div class="error-message">{{ errors["time"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Type of Misinformation -->
+          <div class="mb-3">
+            <label for="misinfo" class="form-label fw-semibold">{% if lang == 'en' %}Type of Misinformation{% else %}نوع المعلومة المضللة{% endif %}</label>
+            <select id="misinfo" name="misinfo" class="form-select" required>
+              <option value="">{% if lang == 'en' %}Select Type{% else %}اختر النوع{% endif %}</option>
+              <option value="طرق غير امنة">طرق غير امنة</option>
+              <option value="مستشفيات">مستشفيات</option>
+              <option value="نقاط توزيع الامدادات الطبية">نقاط توزيع الامدادات الطبية</option>
+              <option value="فقدان شخص">فقدان شخص</option>
+              <option value="فقدان ممتلكات">فقدان ممتلكات</option>
+              <option value="ألغام - متفجرات">ألغام - متفجرات</option>
+              <option value="معلومة عن المواد الغذائية أو وجود التكايا">معلومة عن المواد الغذائية أو وجود التكايا</option>
+              <option value="معلومة عن انتصار أو دخول أحد طرفي النزاع لمنطقة ما">معلومة عن انتصار أو دخول أحد طرفي النزاع لمنطقة ما</option>
+              <option value="قرب انتهاء الحرب">قرب انتهاء الحرب</option>
+              <option value="معلومة مضللة أخرى">معلومة مضللة أخرى</option>
+            </select>
+            {% if errors.get("misinfo") %}
+              <div class="error-message">{{ errors["misinfo"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Decision -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{% if lang == 'en' %}Did this misinformation lead you to make a decision?{% else %}هل المعلومة المضللة قادتك لاتخاذ قرار معين؟{% endif %}</label>
+            <select name="decision" class="form-select" required>
+              <option value="">{% if lang == 'en' %}Select{% else %}اختر{% endif %}</option>
+              <option value="True">{% if lang == 'en' %}Yes{% else %}نعم{% endif %}</option>
+              <option value="False">{% if lang == 'en' %}No{% else %}لا{% endif %}</option>
+            </select>
+            {% if errors.get("decision") %}
+              <div class="error-message">{{ errors["decision"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Risk Level -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{% if lang == 'en' %}Danger Level of this Decision{% else %}مستوى خطورة هذا القرار{% endif %}</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="danger" value="High" id="high">
+                <label class="form-check-label text-danger" for="high"><i class="bi bi-exclamation-triangle-fill text-danger"></i>{% if lang == 'en' %}High{% else %}عالية{% endif %}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="danger" value="Medium" id="medium">
+                <label class="form-check-label text-warning" for="medium"><i class="bi bi-exclamation-triangle-fill text-warning"></i>{% if lang == 'en' %}Medium{% else %}متوسطة{% endif %}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="danger" value="Low" id="low">
+                <label class="form-check-label text-success" for="low"><i class="bi bi-check-circle-fill text-success"></i>{% if lang == 'en' %}Low{% else %}منخفضة{% endif %}</label>
+              </div>
+            </div>
+            {% if errors.get("danger") %}
+              <div class="error-message">{{ errors["danger"] }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Story -->
+<div class="mb-3">
+  <label class="form-label fw-semibold">
+    {% if lang == 'en' %}Your Story{% else %}قصتك{% endif %}
+  </label>
+  <textarea id="story" name="story" class="form-control" rows="6" maxlength="3000" required></textarea>
+  <div class="d-flex justify-content-between mt-1">
+    <small class="text-muted">
+      {% if lang == 'en' %}Max 3000 chars{% else %}الحد الأقصى 3000 حرف{% endif %}
+    </small>
+    <small class="text-muted" id="char-count">0 / 3000</small>
+  </div>
+  {% if errors.get("story") %}
+    <div class="error-message">{{ errors["story"] }}</div>
+  {% endif %}
+</div>
+          <!-- Media -->
+          <div class="mb-3">
+            <label for="media" class="form-label fw-semibold">{% if lang == 'en' %}Attach Media (optional){% else %}إرفاق وسائط (اختياري){% endif %}</label>
+            <input class="form-control" type="file" id="media" name="media" multiple accept="image/*,audio/*,video/*">
+            <div class="form-text">{% if lang == 'en' %}Max 10 files{% else %}الحد الأقصى 10 ملفات{% endif %}</div>
+            <ul id="file-list" class="mt-2 small text-muted"></ul>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">{% if lang == 'en' %}🚀 Share{% else %}🚀 إرسال{% endif %}</button>
+            <a class="btn btn-outline-secondary px-4 py-2 rounded-3" href="{{ url_for('main.home_fully', lang=lang) }}">{% if lang == 'en' %}Cancel{% else %}إلغاء{% endif %}</a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+<script>
+  const storyTextarea = document.getElementById("story");
+  const charCount = document.getElementById("char-count");
+
+  storyTextarea.addEventListener("input", () => {
+    const currentLength = storyTextarea.value.length;
+    charCount.textContent = `${currentLength} / 3000`;
+  });
+</script>
+{% endblock %}

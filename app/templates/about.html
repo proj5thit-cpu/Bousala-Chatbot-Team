@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-vh-100 d-flex flex-column justify-content-between" 
+     style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);">
+
+  <!-- About Section -->
+  <section class="about-section py-5">
+    <div class="container">
+
+      <!-- Who Are We -->
+      <div class="card border-0 shadow-lg rounded-4 mb-5 bg-light about-card">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-3 {{ 'text-start' if request.args.get('lang') == 'en' else 'text-end' }}">
+            {% if request.args.get('lang') == 'en' %} Who Are We? {% else %} من نحن؟ {% endif %}
+          </h3>
+          <p class="fs-5 {{ 'text-start' if request.args.get('lang') == 'en' else 'text-end' }}">
+            {% if request.args.get('lang') == 'en' %}
+              We are people who care — students, developers, and children of this homeland. 
+              We couldn’t stay silent while our people suffered. 
+              This project grew from pain, but it carries hope. 
+              We created it to stand with everyone caught in war, lost and afraid, 
+              seeking truth amidst chaos. 
+              We know what it means to feel lost. That’s why we designed this place — 
+              to be a compass, a source of trust, and a lifeline in the hardest times.
+            {% else %}
+              نحن أناس يهتمّون: طلاب ومطورون وأبناء هذا الوطن – لم نستطع أن نقف مكتوفي الأيدي بينما يعاني أهلنا. 
+              نما هذا المشروع من ألم، لكنه يحمل الأمل. 
+              أنشأناه لنقف إلى جانب كل من وجد نفسه وسط الحرب، 
+              تائهًا، خائفًا، يبحث عن الحقيقة وسط فوضى المعلومات. 
+              نحن نعلم ماذا يعني أن تشعر بالضياع، ولهذا صممنا هذا المكان؛ 
+              ليكون سندًا، ومصدر ثقة، وبوصلة حتى في وقت الشدة.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Our Mission -->
+      <div class="card border-0 shadow-lg rounded-4 mb-5 bg-light about-card">
+        <div class="card-body p-4 text-center">
+          <div class="mb-3">
+            <i class="bi bi-compass-fill text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h3 class="fw-bold mb-3">
+            {% if request.args.get('lang') == 'en' %} Our Mission {% else %} مهمتنا {% endif %}
+          </h3>
+          <p class="fs-5">
+            {% if request.args.get('lang') == 'en' %}
+              To be a guiding light in times of conflict. 
+              Bousala (Compass) was built to provide truth, safety, and direction 
+              when misinformation and fear surround people. 
+              We aim to empower civilians with knowledge, help them avoid danger, 
+              and remind them that even in war, there is hope and solidarity.
+            {% else %}
+              أن نكون نورًا يرشد في أوقات النزاع. 
+              صُممت بوصلة لتمنح الناس الحقيقة والأمان والاتجاه 
+              عندما يحيط بهم الخوف والمعلومات المضللة. 
+              نهدف إلى تمكين المدنيين بالمعرفة، ومساعدتهم على تجنّب الخطر، 
+              وتذكيرهم أنه حتى في الحرب، هناك أمل وتضامن.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- What We Offer -->
+      <div class="card border-0 shadow-lg rounded-4 bg-light about-card">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-3 {{ 'text-start' if request.args.get('lang') == 'en' else 'text-end' }}">
+            {% if request.args.get('lang') == 'en' %} What Do We Offer You? {% else %} ماذا نقدم لك؟ {% endif %}
+          </h3>
+          <p class="fs-5 {{ 'text-start' if request.args.get('lang') == 'en' else 'text-end' }}">
+            {% if request.args.get('lang') == 'en' %}
+              We give you a space where your voice matters and makes a difference. 
+              Here, you can share your story, because your words might guide others 
+              or give strength to someone going through the same. 
+              Through our smart chatbot, we offer you help in dangerous moments — 
+              whether it's advice on safety, routes, food, shelter, or truth-checking. 
+              You’re not alone. 
+              This space was created for you, to support you, connect you with others, 
+              and give you strength — because you deserve clarity, and you deserve to be saved.
+            {% else %}
+              نقدّم لك مساحة يكون فيها صوتك معنى وتأثير. 
+              هنا يمكنك أن تروي قصتك وتشارك ما حدث لك، 
+              لأن كلماتك قد تكون دليلاً لغيرك، أو مصدر قوة لأحد يمر بما مررت به. 
+              من خلال شات بوت ذكي، نمدّ لك يد العون في لحظات الخطر، 
+              نساعدك على اتخاذ قرارات مصيرية صعبة. 
+              هل من الأمان أن أغادر؟ أو الطرق السليم؟ أين أجد الغذاء أو العلاج؟ 
+              وكيف نتحقق من الأخبار؟ 
+              نحن نعلم أن الوضع ليس سهلًا، ولكنك لن تكون وحدك. 
+              هذا الفضاء صُمم من أجلك، ليصغي، ويصلك بغيرك، 
+              ويمنحك القوة للاستمرار، لأنك تستحق الحقيقة، وتستحق أن تُنقذ.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Social Media Footer -->
+  <footer class="bg-dark text-white py-4 rounded-top mt-auto shadow-lg">
+    <div class="container text-center">
+      <h5 class="mb-3">
+        {% if request.args.get('lang') == 'en' %}
+          Follow us on our social media accounts
+        {% else %}
+          من خلال حساباتنا على منصات التواصل الاجتماعي
+        {% endif %}
+      </h5>
+
+      <div class="d-flex justify-content-center gap-4 mb-3">
+        <span class="text-white fs-4" title="Facebook"><a href="#"><i class="bi bi-facebook"></i></a></span>
+        <span class="text-white fs-4" title="Instagram"><a href="https://www.instagram.com/bousalasudan?igsh=Ym1id3Byc283YTZt&utm_source=qr"><i class="bi bi-instagram"></i></a></span>
+        <span class="text-white fs-4" title="X (Twitter)"><a href="https://x.com/bousala_sudan"><i class="bi bi-x"></i></a></span>
+        <span class="text-white fs-4" title="Email"><a href="#"><i class="bi bi-envelope-fill"></i></a></span>
+      </div>
+
+      <p class="mb-0 small">
+        bousala@gmail.com | 00249126348178
+      </p>
+    </div>
+  </footer>
+</div>
+
+<style>
+
+html, body, .content, .main-content, .container-fluid {
+  background: none !important;
+  background-image: none !important;
+}
+
+/* Card hover effect */
+.about-card {
+  background: #f8f9fa;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+}
+
+/* Smooth hover on social icons */
+footer i {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+footer i:hover {
+  transform: scale(1.2);
+  color: #0dcaf0;
+}
+</style>
+{% endblock %}

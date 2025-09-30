@@ -1,0 +1,131 @@
+{
+  "start": {
+    "type": "question",
+    "question": {
+      "en": "What type of support do you need?",
+      "ar": "ما نوع الدعم الذي تحتاجه؟"
+    },
+    "options": {
+      "movement": { "en": "🚶 Movement & Travel", "ar": "🚶 الحركة والتنقل" },
+      "safety": { "en": "🛡️ Safety & Shelter", "ar": "🛡️ السلامة والمأوى" },
+      "health": { "en": "🏥 Health & Medical", "ar": "🏥 الصحة والعلاج" },
+      "supplies": { "en": "🥖 Food & Supplies", "ar": "🥖 الطعام والاحتياجات" },
+      "missing": { "en": "🧑‍🤝‍🧑 Missing Persons", "ar": "🧑‍🤝‍🧑 المفقودين" }
+    }
+  },
+
+  "movement": {
+    "type": "leaf",
+    "misinfo_type": "طرق غير امنة",
+    "advice": {
+      "en": [
+        "Avoid unsafe or unfamiliar routes.",
+        "Use community-shared safe passages when possible."
+      ],
+      "ar": [
+        "تجنب الطرق غير الآمنة أو غير المألوفة.",
+        "استخدم الممرات الآمنة التي يشاركها المجتمع متى أمكن."
+      ]
+    },
+    "stories": {
+      "good": {
+        "en": ["Always ask locals about safe passages before traveling."],
+        "ar": ["اطلب دائماً من السكان المحليين المساعدة لمعرفة الطرق الآمنة."]
+      }
+    }
+  },
+
+  "safety": {
+    "type": "leaf",
+    "misinfo_type": "ألغام - متفجرات",
+    "advice": {
+      "en": [
+        "Stay away from mined or unsafe areas.",
+        "Seek shelter in community centers when possible."
+      ],
+      "ar": [
+        "ابتعد عن المناطق التي يشتبه بوجود ألغام فيها.",
+        "ابحث عن مأوى في المراكز المجتمعية عند الإمكان."
+      ]
+    },
+    "stories": {
+      "good": {
+        "en": ["Families stayed safe by avoiding abandoned buildings."],
+        "ar": ["بقيت العائلات آمنة عندما تجنبت المباني المهجورة."]
+      }
+    }
+  },
+
+  "health": {
+    "type": "leaf",
+    "misinfo_type": "مستشفيات",
+    "advice": {
+      "en": [
+        "Verify hospitals are open before traveling.",
+        "Look for temporary clinics in community areas."
+      ],
+      "ar": [
+        "تحقق من أن المستشفيات تعمل قبل السفر.",
+        "ابحث عن العيادات المؤقتة في المناطق المجتمعية."
+      ]
+    },
+    "stories": {
+      "good": {
+        "en": ["Volunteers offered first aid when hospitals were closed."],
+        "ar": ["قدّم المتطوعون الإسعافات الأولية عندما كانت المستشفيات مغلقة."]
+      }
+    }
+  },
+
+  "supplies": {
+    "type": "leaf",
+    "misinfo_type": "معلومة عن المواد الغذائية أو وجود التكايا",
+    "advice": {
+      "en": [
+        "Buy from trusted community distribution points.",
+        "Avoid crowded unsafe markets."
+      ],
+      "ar": [
+        "اشترِ من نقاط التوزيع المجتمعية الموثوقة.",
+        "تجنب الأسواق المزدحمة في المناطق غير الآمنة."
+      ]
+    },
+    "stories": {
+      "good": {
+        "en": ["Safe kitchens provided meals daily in some neighborhoods."],
+        "ar": ["وفرت المطابخ المجتمعية وجبات يومياً في بعض الأحياء."]
+      }
+    }
+  },
+
+
+
+  "missing": {
+    "type": "leaf",
+    "misinfo_type": "فقدان شخص",
+    "advice": {
+      "en": [
+        "Report missing persons to trusted local networks.",
+        "Share information only with reliable parties."
+      ],
+      "ar": [
+        "أبلغ عن المفقودين عبر الشبكات المحلية الموثوقة.",
+        "شارك المعلومات فقط مع جهات موثوقة."
+      ]
+    },
+    "stories": {
+      "good": {
+        "en": ["Local groups reunited families safely."],
+        "ar": ["أعادت المجموعات المحلية لم شمل العائلات بأمان."]
+      }
+    }
+  },
+
+  "fallback": {
+    "type": "leaf",
+    "advice": {
+      "en": ["Sorry, I could not find advice for that."],
+      "ar": ["عذراً، لم أجد نصائح لهذا الخيار."]
+    }
+  }
+}

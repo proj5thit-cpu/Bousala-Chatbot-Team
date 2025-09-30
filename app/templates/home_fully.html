@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-vh-100 d-flex flex-column justify-content-between"
+     style="background: linear-gradient(135deg, #1a2a6c, #2a4858, #0f2027);">
+
+  <!-- Description Section -->
+  <div class="description-box text-center p-5 mb-5 rounded shadow-lg text-white">
+    {% if request.args.get('lang') == 'en' %}
+      <h2 class="mb-3 fw-bold display-5">Welcome to Bousala</h2>
+      <p class="lead fs-5">Guiding your choices in conflict with clarity and trust.</p>
+    {% else %}
+      <h2 class="mb-3 fw-bold display-5">مرحباً بك في بوصلة</h2>
+      <p class="lead fs-5">نرشدك لاتخاذ قرارات واضحة وآمنة أثناء النزاعات.</p>
+    {% endif %}
+  </div>
+
+  <!-- Features Section -->
+  <section class="container py-5">
+    <div class="row g-4">
+      
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-lg rounded-4 hover-effect">
+          <div class="card-body text-center p-4">
+            <div class="mb-3">
+              <i class="bi bi-lightning-charge-fill text-primary fs-1"></i>
+            </div>
+            {% if lang == "en" %}
+              <h4 class="fw-semibold mb-3">Real-Time Guidance</h4>
+              <p>Get accurate, up-to-date information to make safe decisions during critical times.</p>
+            {% else %}
+              <h4 class="fw-semibold mb-3" dir="rtl">إرشاد فوري</h4>
+              <p dir="rtl">احصل على معلومات دقيقة ومحدثة لاتخاذ قرارات آمنة في الأوقات الحرجة.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-lg rounded-4 hover-effect">
+          <div class="card-body text-center p-4">
+            <div class="mb-3">
+              <i class="bi bi-chat-dots-fill text-success fs-1"></i>
+            </div>
+            {% if lang == "en" %}
+              <h4 class="fw-semibold mb-3">Chatbot Support</h4>
+              <p>Ask questions and receive answers through our intelligent chatbot trained to support civilians.</p>
+            {% else %}
+              <h4 class="fw-semibold mb-3" dir="rtl">دعم عبر المحادثة</h4>
+              <p dir="rtl">اطرح أسئلتك واحصل على إجابات عبر محادثتنا الذكية المصممة لدعم المدنيين.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-lg rounded-4 hover-effect">
+          <div class="card-body text-center p-4">
+            <div class="mb-3">
+              <i class="bi bi-geo-alt-fill text-danger fs-1"></i>
+            </div>
+            {% if lang == "en" %}
+              <h4 class="fw-semibold mb-3">Safe Navigation</h4>
+              <p>Use Bousala to locate safe routes, resources, and humanitarian services nearby.</p>
+            {% else %}
+              <h4 class="fw-semibold mb-3" dir="rtl">ملاحة آمنة</h4>
+              <p dir="rtl">استخدم بوصلة لتحديد الطرق الآمنة والموارد والخدمات الإنسانية القريبة.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="text-center py-3 bg-dark text-white rounded-top mt-auto">
+    {% if lang == "en" %}
+      <small>&copy; 2025 Bousala. All rights reserved.</small>
+    {% else %}
+      <small dir="rtl">&copy; 2025 بوصلة. جميع الحقوق محفوظة.</small>
+    {% endif %}
+  </footer>
+</div>
+
+<style>
+/* Card hover effect */
+.hover-effect {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-effect:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25) !important;
+}
+</style>
+{% endblock %}

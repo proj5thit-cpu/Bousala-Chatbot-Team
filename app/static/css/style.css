@@ -1,0 +1,322 @@
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Cairo', sans-serif;
+    direction: ltr;
+    background: url("/static/img/bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Navbar Custom Styles */
+.navbar {
+    background-color: #ffffffd8;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 0.7rem 1.5rem;
+    z-index: 10;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+/* Highlight the "Share Your Post" button */
+.share-button {
+    background-color: #007bff;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 600;
+    margin-left: 15px;
+    transition: background-color 0.3s;
+}
+
+.share-button:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    background-image: url("../img/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.3); /* Light overlay */
+    z-index: 1;
+}
+
+.hero-section > .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Box with text on hero image */
+.hero-box {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Align text and box based on language */
+.hero-box.text-start {
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left;
+}
+
+.hero-box.text-end {
+    margin-right: 0;
+    margin-left: auto;
+    text-align: right;
+}
+
+/* Typography inside hero-box */
+.hero-box h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: right;
+}
+
+.hero-box p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    text-align: right;
+}
+
+
+
+/* About Section Background */
+.about-section {
+    position: relative;
+    padding: 80px 0;
+    color: white;
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.about-section .overlay-box {
+    background-color: rgba(0, 0, 0, 0.5); /* Dark transparent overlay */
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+footer .fs-4:hover {
+    color: #007bff;
+    
+    opacity: 0.8;
+}
+
+/* ================= GuideBot Chat Styles ================= */
+
+/* ---- GuideBot Chat Styles ---- */
+.guidebot-container { max-width: 980px; }
+
+.chatbot-card {
+  background: rgba(255,255,255,0.98);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+  padding: 18px;
+}
+
+.chat-window {
+  height: 420px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #fafafa, #f3f6fb);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* messages */
+.bot-message {
+  background: #fff;
+  color: #0f172a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80%;
+  align-self: flex-start;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.user-message {
+  background: #e8f0ff;
+  color: #0b3a8c;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80%;
+  align-self: flex-end;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* classification card styling */
+.classification-card { background: #fff; border-left: 5px solid rgba(0,0,0,0.04); }
+
+/* input row */
+.input-row input.form-control {
+  border-radius: 999px;
+}
+
+.input-row .btn {
+  border-radius: 999px;
+}
+
+/* responsive smaller */
+@media (max-width:720px) {
+  .chat-window { height: 360px; }
+}
+
+
+/* ====== Auth Forms (Register & Login) ====== */
+.auth-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #ffffffd8;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.auth-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.auth-form input,
+.auth-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+    border-color: #007BFF;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.auth-form button:hover {
+    background: #0056b3;
+}
+
+.auth-form p.error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+
+.message {
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 12px;
+  max-width: 70%;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.message.user {
+  background: #0078d7;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.message.bot {
+  background: #f1f1f1;
+  color: #333;
+  align-self: flex-start;
+}
+
+.message.thinking {
+  display: flex;
+  gap: 4px;
+}
+
+.message.thinking .dot {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  animation: blink 1s infinite alternate;
+}
+
+.message.thinking .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.message.thinking .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #fafafa;
+  border-radius: 8px;
+}
