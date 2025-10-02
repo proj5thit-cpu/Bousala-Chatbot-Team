@@ -159,6 +159,14 @@
             {% endif %}
           </div>
 
+
+           <!-- Follow-up Question (fix added here) -->
+          <div class="mb-3 d-none" id="followup-wrapper">
+            <label for="followup" id="followup-label" class="form-label fw-semibold"></label>
+            <select id="followup" name="followup" class="form-select"></select>
+          </div>
+
+
           <!-- Decision -->
           <div class="mb-3">
             <label class="form-label fw-semibold">{% if lang == 'en' %}Did this misinformation lead you to make a decision?{% else %}هل المعلومة المضللة قادتك لاتخاذ قرار معين؟{% endif %}</label>
@@ -231,7 +239,77 @@
   </div>
 </section>
 <script>
-  const storyTextarea = document.getElementById("story");
+  const regionSelect = document.getElementById('region');
+const localityWrapper = document.getElementById('locality-wrapper');
+const localitySelect = document.getElementById('locality');
+
+const localities = {
+  "Khartoum": [
+    "محلية الخرطوم", "محلية أم درمان الكبرى", "محلية الخرطوم بحري",
+    "محلية شرق النيل", "محلية أم بدة", "محلية كرري", "محلية جبل أولياء"
+  ],
+  "Gezira": [
+    "محلية ود مدني الكبرى", "محلية جنوب الجزيرة", "محلية شرق الجزيرة",
+    "محلية المناقل", "محلية الحصاحيصا", "محلية أم القرى",
+    "محلية الكاملين", "محلية 24 القرشي"
+  ]
+};
+
+regionSelect.addEventListener('change', () => {
+  const selected = regionSelect.value;
+  localitySelect.innerHTML = '';
+  if (localities[selected]) {
+    localityWrapper.classList.remove('d-none');
+    localities[selected].forEach(loc => {
+      const opt = document.createElement('option');
+      opt.textContent = loc;
+      opt.value = loc;
+      localitySelect.appendChild(opt);
+    });
+  } else {
+    localityWrapper.classList.add('d-none');
+  }
+});
+
+const misinfo = document.getElementById("misinfo");
+const followupWrapper = document.getElementById("followup-wrapper");
+const followupSelect = document.getElementById("followup");
+const followupLabel = document.getElementById("followup-label");
+
+misinfo.addEventListener("change", function() {
+  followupSelect.innerHTML = "";
+  let options = [];
+
+  if (this.value === "طرق غير امنة") {
+    followupLabel.textContent = "ما هي تفاصيل القصة؟";
+    options = ["ارتكازات طريق", "حواجز", "تفتيش", "أخرى"];
+  } else if (this.value === "مستشفيات") {
+    followupLabel.textContent = "ما هو الوضع؟";
+    options = ["مستشفى مغلق", "رفض استقبال حالات", "نقص أطباء", "مستشفيات تحت سيطرة الدعم", "أخرى"];
+  } else if (this.value === "نقاط توزيع الامدادات الطبية") {
+    followupLabel.textContent = "ما التفاصيل؟";
+    options = ["أدوية أمراض مزمنة", "أدوية مغشوشة", "ارتكاز تسبب في اغلاق النقاط"];
+  } else if (this.value === "فقدان شخص") {
+    followupLabel.textContent = "ما التفاصيل؟";
+    options = ["اعتقال / تجنيد", "معلومة كاذبة", "تضخيم خبر", "أخرى"];
+  } else if (this.value === "فقدان ممتلكات") {
+    followupLabel.textContent = "ما التفاصيل؟";
+    options = ["عقار - منازل - مزارع - محلات تجارية", "سيارات - ماكينات", "ذهب - نقود"];
+  }
+
+  if (options.length > 0) {
+    followupWrapper.classList.remove("d-none");
+    options.forEach(opt => {
+      const o = document.createElement("option");
+      o.textContent = opt;
+      followupSelect.appendChild(o);
+    });
+  } else {
+    followupWrapper.classList.add("d-none");
+  }
+});
+
+const storyTextarea = document.getElementById("story");
   const charCount = document.getElementById("char-count");
 
   storyTextarea.addEventListener("input", () => {
