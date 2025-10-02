@@ -225,7 +225,8 @@ def post():
             created_at=datetime.utcnow(),
             time=time
         )
-        db.session.add(new_post)
+        db.session.add(new_post) 
+        db.session.commit()
         db.session.flush()
 
         files = request.files.getlist('media')
@@ -546,6 +547,7 @@ def admin_export():
         download_name=fname,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 
 
