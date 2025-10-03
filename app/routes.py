@@ -25,6 +25,10 @@ from flask import abort
 from io import BytesIO
 import pandas as pd
 
+
+from psycopg2.extras import execute_values
+import psycopg2
+
 main = Blueprint("main", __name__)
 
 # Load .env
@@ -549,6 +553,82 @@ def admin_export():
     )
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@main.route("/migrate", methods=["GET"])
+def migrate():
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        return "❌ DATABASE_URL not set", 500
+
+    # Connect to old SQLite file (make sure it's in your repo or uploaded once)
+    sqlite_conn = sqlite3.connect("users.db")
+    sqlite_cur = sqlite_conn.cursor()
+
+    # Connect to Postgres
+    pg_conn = psycopg2.connect(DATABASE_URL)
+    pg_cur = pg_conn.cursor()
+
+    # ---- Users ----
+    sqlite_cur.execute("SELECT id, username, email, password, is_guest, age_group, gender FROM Users")
+    rows = sqlite_cur.fetchall()
+    execute_values(pg_cur,
+        'INSERT INTO "Users" (id, username, email, password, is_guest, age_group, gender) VALUES %s ON CONFLICT DO NOTHING',
+        rows
+    )
+
+    # ---- Posts ----
+    sqlite_cur.execute("SELECT id, created_at, time, user_id, state, locality, misinfo_type, followup, decision, danger_level, content FROM Posts")
+    rows = sqlite_cur.fetchall()
+    execute_values(pg_cur,
+        'INSERT INTO "Posts" (id, created_at, time, user_id, state, locality, misinfo_type, followup, decision, danger_level, content) VALUES %s ON CONFLICT DO NOTHING',
+        rows
+    )
+
+    # ---- Media ----
+    sqlite_cur.execute("SELECT id, filename, media_type, post_id FROM Media")
+    rows = sqlite_cur.fetchall()
+    execute_values(pg_cur,
+        'INSERT INTO "Media" (id, filename, media_type, post_id) VALUES %s ON CONFLICT DO NOTHING',
+        rows
+    )
+
+    # ---- Notifications ----
+    sqlite_cur.execute("SELECT id, user_id, message, is_read, created_at FROM Notification")
+    rows = sqlite_cur.fetchall()
+    execute_values(pg_cur,
+        'INSERT INTO "Notification" (id, user_id, message, is_read, created_at) VALUES %s ON CONFLICT DO NOTHING',
+        rows
+    )
+
+    pg_conn.commit()
+    sqlite_conn.close()
+    pg_conn.close()
+
+    return "✅ Migration complete! You can now delete this route for security."
 
 
 
