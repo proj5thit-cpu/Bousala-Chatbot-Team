@@ -33,7 +33,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'your-secret-key'
     
     # SQLAlchemy config
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///users.db")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Where to save media (under static/uploads so it's web-accessible)
@@ -59,3 +59,4 @@ def create_app():
     init_decision_tree(app)
 
     return app
+
