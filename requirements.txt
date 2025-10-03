@@ -7,6 +7,7 @@ pytz>=2025.2
 faiss-cpu==1.12.0
 pandas==2.3.3
 openpyxl==3.1.2
+psycopg2-binary>=2.9
 
 
 
