@@ -32,10 +32,7 @@ def create_app():
     # Secret key
     app.config['SECRET_KEY'] = 'your-secret-key'
     
-    # SQLAlchemy config
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    
+   
     # Where to save media (under static/uploads so it's web-accessible)
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
