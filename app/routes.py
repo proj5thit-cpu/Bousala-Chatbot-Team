@@ -632,4 +632,11 @@ def migrate():
 
 
 
+@main.route("/initdb")
+def initdb():
+    from app.database import db
+    db.create_all()
+    return "✅ Database tables created!"
+
+
 
