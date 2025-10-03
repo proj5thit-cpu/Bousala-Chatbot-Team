@@ -140,7 +140,8 @@ def get_all_posts():
 if __name__ == "__main__":
     from flask import Flask
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     init_db(app)
     print("✅ Database initialized successfully.")
+
